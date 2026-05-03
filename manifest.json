@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "TrustNET AI – Browser Extension for Phishing & Unsafe Website Detection",
+  "version": "0.1.0",
+  "description": "Protects users from phishing and unsafe websites using APIs, ML classification, and heuristics.",
+  "icons": {
+    "16": "public/icon16.png",
+    "48": "public/icon48.png",
+    "128": "public/icon128.png"
+  },
+  "action": {
+    "default_title": "TrustNET AI",
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "public/icon16.png",
+      "48": "public/icon48.png",
+      "128": "public/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "scripting",
+    "activeTab",
+    "webRequest",
+    "alarms",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/detector.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_page": "index.html"
+}
