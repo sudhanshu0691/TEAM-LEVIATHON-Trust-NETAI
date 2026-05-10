@@ -5,8 +5,13 @@ Loads legitimate and phishing URLs from JSON files for fast O(1) lookups
 
 import json
 import os
+import sys
 from urllib.parse import urlparse
 from typing import Dict, Optional, Tuple
+from publicsuffix2 import get_sld
+
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 class LocalDataset:
     """Load and search local URL datasets"""
@@ -85,6 +90,20 @@ class LocalDataset:
             return domain
         except:
             return url.lower().strip()
+
+    def _extract_registrable_domain(self, domain: str) -> str:
+        """Extract registrable domain (eTLD+1), fallback to simple split."""
+        if not domain:
+            return ''
+        try:
+            registrable = get_sld(domain)
+            if registrable:
+                return registrable.lower()
+        except Exception:
+            pass
+
+        parts = domain.split('.')
+        return '.'.join(parts[-2:]) if len(parts) >= 2 else domain
     
     def check_url(self, url: str) -> Dict:
         """
@@ -109,6 +128,7 @@ class LocalDataset:
         
         url_clean = url.strip().lower()
         domain = self._extract_domain(url)
+        registrable_domain = self._extract_registrable_domain(domain)
         
         # Check exact URL match first (fastest)
         if url_clean in self.legitimate_urls:
@@ -141,6 +161,16 @@ class LocalDataset:
                 'domain': domain,
                 'reason': 'local_dataset_legitimate'
             }
+
+        if registrable_domain in self.legitimate_domains:
+            return {
+                'found': True,
+                'safe': True,
+                'type': 'legitimate',
+                'match_type': 'registrable_domain',
+                'domain': registrable_domain,
+                'reason': 'local_dataset_legitimate'
+            }
         
         if domain in self.phishing_domains:
             return {
@@ -149,6 +179,16 @@ class LocalDataset:
                 'type': 'phishing',
                 'match_type': 'domain',
                 'domain': domain,
+                'reason': 'local_dataset_phishing'
+            }
+
+        if registrable_domain in self.phishing_domains:
+            return {
+                'found': True,
+                'safe': False,
+                'type': 'phishing',
+                'match_type': 'registrable_domain',
+                'domain': registrable_domain,
                 'reason': 'local_dataset_phishing'
             }
         

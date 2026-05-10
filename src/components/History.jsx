@@ -64,12 +64,16 @@ export default function History({onStatsUpdate}){
   }
 
   function exportCSV(){
+    const sanitizeCsvCell = (value) => {
+      const text = String(value ?? '')
+      return /^[=+\-@]/.test(text) ? `'${text}` : text
+    }
     const headers = ['URL', 'Status', 'Reason', 'Timestamp']
     const rows = list.map(it => [
-      it.url,
-      it.safe ? 'Safe' : 'Unsafe',
-      it.reason || 'N/A',
-      new Date(it.ts).toLocaleString()
+      sanitizeCsvCell(it.url),
+      sanitizeCsvCell(it.safe ? 'Safe' : 'Unsafe'),
+      sanitizeCsvCell(it.reason || 'N/A'),
+      sanitizeCsvCell(new Date(it.ts).toLocaleString())
     ])
     const csv = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n')
     const blob = new Blob([csv], {type:'text/csv'})
@@ -97,7 +101,24 @@ export default function History({onStatsUpdate}){
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-bold text-lg text-gray-800">📊 Scan History</h3>
           <div className="flex gap-2">
-
+            <button
+              onClick={exportCSV}
+              className="px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+            >
+              CSV
+            </button>
+            <button
+              onClick={exportJson}
+              className="px-2 py-1 text-xs font-semibold bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200"
+            >
+              JSON
+            </button>
+            <button
+              onClick={clearHistory}
+              className="px-2 py-1 text-xs font-semibold bg-red-100 text-red-700 rounded hover:bg-red-200"
+            >
+              Clear
+            </button>
           </div>
         </div>
 

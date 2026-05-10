@@ -89,7 +89,8 @@ export default function Alert({url, reason, onWhitelist, details}){
       case 'critical':
         return {
           icon: '🚨',
-          color: 'red',
+          progressBar: 'bg-red-600',
+          tipBorder: 'border-red-500',
           gradient: 'from-red-50 to-red-100',
           border: 'border-red-400',
           title: 'CRITICAL THREAT DETECTED',
@@ -100,7 +101,8 @@ export default function Alert({url, reason, onWhitelist, details}){
       case 'high':
         return {
           icon: '⚠️',
-          color: 'orange',
+          progressBar: 'bg-orange-600',
+          tipBorder: 'border-orange-500',
           gradient: 'from-orange-50 to-orange-100',
           border: 'border-orange-400',
           title: 'High Risk Website',
@@ -111,7 +113,8 @@ export default function Alert({url, reason, onWhitelist, details}){
       case 'medium':
         return {
           icon: '⚡',
-          color: 'yellow',
+          progressBar: 'bg-yellow-600',
+          tipBorder: 'border-yellow-500',
           gradient: 'from-yellow-50 to-yellow-100',
           border: 'border-yellow-400',
           title: 'Suspicious Activity Detected',
@@ -122,7 +125,8 @@ export default function Alert({url, reason, onWhitelist, details}){
       default:
         return {
           icon: '⚠️',
-          color: 'orange',
+          progressBar: 'bg-orange-600',
+          tipBorder: 'border-orange-500',
           gradient: 'from-orange-50 to-orange-100',
           border: 'border-orange-400',
           title: 'Potentially Unsafe Website',
@@ -175,7 +179,7 @@ export default function Alert({url, reason, onWhitelist, details}){
           <div className="flex items-center gap-3">
             <div className="flex-1 bg-gray-300 rounded-full h-3">
               <div 
-                className={`bg-${config.color}-600 h-3 rounded-full transition-all duration-500`}
+                className={`${config.progressBar} h-3 rounded-full transition-all duration-500`}
                 style={{width: `${Math.min(details.risk_score, 100)}%`}}
               ></div>
             </div>
@@ -228,7 +232,7 @@ export default function Alert({url, reason, onWhitelist, details}){
       )}
 
       {/* Security Tip */}
-      <div className={`p-4 bg-white rounded-lg text-sm text-gray-700 border-l-4 border-${config.color}-500 font-semibold`}>
+      <div className={`p-4 bg-white rounded-lg text-sm text-gray-700 border-l-4 ${config.tipBorder} font-semibold`}>
         <span>💡 Security Tip:</span> Never enter passwords or financial information on suspicious websites. Always verify the URL before proceeding.
       </div>
     </div>

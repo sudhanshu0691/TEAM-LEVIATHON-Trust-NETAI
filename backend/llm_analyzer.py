@@ -264,25 +264,29 @@ class LLMAnalyzer:
     def _openai_analysis(self, url: str, structural: Dict, ml_result: Dict) -> Dict:
         """Analyze using OpenAI API"""
         try:
-            import openai
+            from openai import OpenAI
             
             prompt = self._build_analysis_prompt(url, structural, ml_result)
-            
-            response = openai.ChatCompletion.create(
-                model='gpt-3.5-turbo',
+
+            if not self.api_key:
+                return self._get_pattern_analysis(url, structural)
+
+            client = OpenAI(api_key=self.api_key)
+            response = client.chat.completions.create(
+                model='gpt-4o-mini',
                 messages=[
-                    {'role': 'system', 'content': 'You are a security expert analyzing URLs for phishing threats. Be concise.'},
-                    {'role': 'user', 'content': prompt}
+                    {"role": "system", "content": "You are a security expert analyzing URLs for phishing threats. Be concise."},
+                    {"role": "user", "content": prompt}
                 ],
                 temperature=0.3,
                 max_tokens=200
             )
-            
-            analysis_text = response.choices[0].message.content
+
+            analysis_text = response.choices[0].message.content or ''
             return {
                 'analysis': analysis_text,
                 'explanation': analysis_text,
-                'model_used': 'openai/gpt-3.5-turbo',
+                'model_used': 'openai/gpt-4o-mini',
                 'confidence': 'high'
             }
         except Exception as e:

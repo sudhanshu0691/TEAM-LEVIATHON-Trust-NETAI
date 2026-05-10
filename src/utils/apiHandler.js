@@ -2,6 +2,7 @@ import axios from 'axios'
 import { hashUrl, extractHostname } from './hashUtil'
 
 const BACKEND = 'http://127.0.0.1:5000'
+const API_TIMEOUT_KEY = 'trustnet_ai_api_timeout'
 
 export async function getCurrentTabUrl(){
   return new Promise((resolve)=>{
@@ -24,18 +25,20 @@ export async function getCurrentTabUrl(){
 }
 
 export async function sendCheckRequest(url){
-  const hashed = await hashUrl(url)
-  const domain = extractHostname(url)
+  const normalizedUrl = normalizeUrl(url)
+  const hashed = await hashUrl(normalizedUrl)
+  const domain = extractHostname(normalizedUrl)
+  const timeoutMs = await getApiTimeoutMs()
   
   console.log('📤 [API] Sending check request:', {url, domain, hashed})
   
   try{
-    const resp = await axios.post(`${BACKEND}/check`, { 
-      url: url,
+    const resp = await axios.post(`${BACKEND}/check`, {
+      url: normalizedUrl,
       hashed_url: hashed, 
       domain: domain 
     }, {
-      timeout: 10000 // 10 second timeout
+      timeout: timeoutMs
     })
     
     console.log('📥 [API] Backend response received:', {
@@ -47,7 +50,7 @@ export async function sendCheckRequest(url){
     
     return {
       ...resp.data,
-      url: url,
+      url: normalizedUrl,
       domain: domain,
       timestamp: new Date().toISOString()
     }
@@ -61,8 +64,8 @@ export async function sendCheckRequest(url){
     // If backend is down, return error state
     if(e.code === 'ECONNREFUSED' || e.code === 'ERR_NETWORK'){
       console.warn('⚠️ [API] Backend server is offline')
-      return { 
-        safe: true, 
+      return {
+        safe: false,
         reason: 'backend_offline',
         message: 'Backend server is not running. Please start the Flask backend.',
         error: true
@@ -71,13 +74,35 @@ export async function sendCheckRequest(url){
     
     // For other errors, be safe and mark as inconclusive
     console.warn('⚠️ [API] Request failed, returning inconclusive')
-    return { 
-      safe: true, 
+    return {
+      safe: false,
       reason: 'error',
       message: 'Error checking URL. Proceeding with caution.',
       error: true
     }
   }
+}
+
+function normalizeUrl(url){
+  if (!url) return ''
+  const trimmed = String(url).trim()
+  if (!trimmed) return ''
+  if (/^https?:\/\//i.test(trimmed)) return trimmed
+  return `https://${trimmed}`
+}
+
+async function getApiTimeoutMs(){
+  return new Promise((resolve)=>{
+    try{
+      chrome.storage.local.get([API_TIMEOUT_KEY], (res)=>{
+        const seconds = Number(res?.[API_TIMEOUT_KEY])
+        const safeSeconds = Number.isFinite(seconds) ? Math.min(Math.max(seconds, 5), 60) : 10
+        resolve(safeSeconds * 1000)
+      })
+    }catch(e){
+      resolve(10000)
+    }
+  })
 }
 
 export async function checkWhitelist(domain){

@@ -92,7 +92,9 @@ export default function Popup(){
       })
       console.log('🎯 [Popup] Setting result state to:', {safe: res.safe, reason: res.reason})
       setResult(res)
-      updateStats(!!res.safe)
+      if (!res?.error && typeof res?.safe === 'boolean') {
+        updateStats(res.safe)
+      }
       await pushHistory({url: targetUrl, safe: !!res.safe, reason: res.reason || 'none', ts: Date.now(), details: res})
     } catch(e) {
       console.error('❌ [Popup] Error during check:', e)

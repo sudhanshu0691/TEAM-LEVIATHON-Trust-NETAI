@@ -66,7 +66,7 @@ export default function Settings(){
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `safevisit-whitelist-${new Date().toISOString().split('T')[0]}.json`
+    a.download = `trustnet-ai-whitelist-${new Date().toISOString().split('T')[0]}.json`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -83,7 +83,8 @@ export default function Settings(){
         try{
           const data = JSON.parse(ev.target.result)
           if(Array.isArray(data)){
-            chrome.storage.local.set({[WHITELIST_KEY]: data}, ()=>setWhitelist(data))
+            const cleaned = Array.from(new Set(data.map(item => String(item).trim().toLowerCase()).filter(Boolean)))
+            chrome.storage.local.set({[WHITELIST_KEY]: cleaned}, ()=>setWhitelist(cleaned))
           }
         }catch(err){
           alert('Invalid JSON file')
@@ -308,7 +309,7 @@ export default function Settings(){
 
       {/* About Section */}
       <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl p-4 shadow-md text-white">
-        <h4 className="font-bold text-sm mb-2">👋 About SafeVisit</h4>
+        <h4 className="font-bold text-sm mb-2">👋 About TrustNET AI</h4>
         <p className="text-xs opacity-90 mb-3">
           Advanced web protection extension that keeps you safe from phishing, malware, and suspicious websites.
         </p>

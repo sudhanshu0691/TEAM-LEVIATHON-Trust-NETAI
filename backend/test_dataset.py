@@ -4,7 +4,8 @@
 from local_dataset import LocalDataset
 import os
 
-ld = LocalDataset(os.getcwd())
+backend_dir = os.path.dirname(os.path.abspath(__file__))
+ld = LocalDataset(backend_dir)
 
 # Test legitimate URLs
 test_legitimate = [
@@ -18,7 +19,7 @@ test_legitimate = [
 print("\n✅ Testing LEGITIMATE URL lookups:\n")
 for url in test_legitimate:
     result = ld.check_url(url)
-    status = "✓ SAFE" if result['safe'] else "✗ UNSAFE"
+    status = "✓ SAFE" if result['safe'] is True else "✗ UNSAFE" if result['safe'] is False else "ℹ️ UNKNOWN"
     print(f"  {status} | {url:<30} | {result['match_type']:<12} | Domain: {result['domain']}")
 
 # Test some phishing URLs

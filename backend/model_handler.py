@@ -106,11 +106,9 @@ class ModelHandler:
                 }
             
             if self.cnn_model:
-                # Prepare for CNN (normalize features)
-                from sklearn.preprocessing import StandardScaler
-                scaler = StandardScaler()
-                scaled = scaler.fit_transform(feature_array)
-                cnn_pred = self.cnn_model.predict(scaled, verbose=0)
+                # Use the same feature values used during training.
+                # Fitting a scaler on a single sample collapses variance and corrupts predictions.
+                cnn_pred = self.cnn_model.predict(feature_array, verbose=0)
                 cnn_class = np.argmax(cnn_pred[0])
                 predictions['cnn'] = {
                     'prediction': int(cnn_class),

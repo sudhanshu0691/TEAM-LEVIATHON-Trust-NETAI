@@ -2,11 +2,15 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from typing import Optional, Dict, Any, List
 import os
+import sys
 from urllib.parse import urlparse
 import ssl
 import certifi
 from datetime import datetime
 import hashlib
+
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 # Fix joblib hang on Windows - use spawn method
 os.environ['JOBLIB_START_METHOD'] = 'spawn'
@@ -31,7 +35,8 @@ from llm_analyzer import LLMAnalyzer
 from local_dataset import LocalDataset
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})  # Enable CORS for all routes with proper configuration
+allowed_origins = os.environ.get('CORS_ORIGINS', '*')
+CORS(app, resources={r"/*": {"origins": [origin.strip() for origin in allowed_origins.split(',')]}})
 
 # Initialize model handler (XGBoost + CNN + Random Forest)
 backend_dir = os.path.dirname(__file__)
@@ -57,10 +62,9 @@ print('\n🔄 Initializing Local Dataset...')
 local_dataset = LocalDataset(backend_dir)
 print()
 
-# Configuration - API keys from environment variables (required for production)
-# Default keys (can be overridden by environment variables)
-GOOGLE_SAFE_BROWSING_KEY = os.environ.get('GSB_API_KEY', 'AIzaSyAGgmti0_8ZTyyitxLsTkn0Ov4U6cp7HGk')
-VIRUSTOTAL_API_KEY = os.environ.get('VT_API_KEY', 'cd841a36679fb2a9c7d105d1f669880f84a6f37f373fa782cc8b5cb87ada6e0c')
+# Configuration - API keys from environment variables
+GOOGLE_SAFE_BROWSING_KEY = os.environ.get('GSB_API_KEY', '')
+VIRUSTOTAL_API_KEY = os.environ.get('VT_API_KEY', '')
 
 if GOOGLE_SAFE_BROWSING_KEY:
     print('✓ Google Safe Browsing API key configured')
@@ -589,7 +593,7 @@ def ml_check(features: Dict[str, Any]) -> Optional[Dict[str, Any]]:
 @app.route('/check', methods=['POST'])
 def check():
     """Main endpoint to check URL safety through multiple verification layers"""
-    data = request.get_json(force=True)
+    data = request.get_json(silent=True) or {}
     hashed_url = data.get('hashed_url')  # For privacy logging (optional)
     if hashed_url:
         print('🔒 Hashed URL provided for privacy logging:', hashed_url)
@@ -646,7 +650,7 @@ def check():
                 'reason': 'local_dataset_legitimate',
                 'source': 'local_dataset',
                 'match_type': local_check['match_type'],
-                'message': f'URL found in local database - Safe',
+                'message': 'url is safe',
                 'analysis': analysis
             })
         else:
@@ -708,10 +712,11 @@ def check():
     headers_check = check_security_headers(url)
     analysis['security_headers'] = headers_check
     
-    # Critical header missing = high risk
-    if headers_check['security_score'] < 30:
+    # Missing headers alone are not strong phishing indicators for many legitimate sites.
+    # Treat this as a warning unless combined with other high-risk signals later.
+    if headers_check['security_score'] < 15:
         print(f'⚠ Poor security headers (score: {headers_check["security_score"]})')
-        if len(headers_check['warnings']) >= 2:
+        if len(headers_check['warnings']) >= 3 and features.get('suspicious_words', 0) >= 3:
             return jsonify({
                 'safe': False,
                 'reason': 'missing_security_headers',
@@ -961,4 +966,4 @@ if __name__ == '__main__':
     print('  9️⃣  Layer 9: LLM-based Semantic Analysis')
     print('  🔄 Weekly: Automatic Model Retraining')
     print('='*60 + '\n')
-    app.run(debug=True, port=5000)
+    app.run(debug=os.environ.get('FLASK_DEBUG', '0') == '1', port=5000)

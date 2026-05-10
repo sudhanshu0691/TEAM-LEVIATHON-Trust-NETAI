@@ -104,7 +104,7 @@ export default function Whitelist({url, onClose}){
                 placeholder="example.com or https://example.com"
                 value={newDomain}
                 onChange={e=>setNewDomain(e.target.value)}
-                onKeyPress={e=>e.key==='Enter' && addDomain()}
+                onKeyDown={e=>e.key==='Enter' && addDomain()}
                 className="flex-1 px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none text-sm"
               />
               <button
