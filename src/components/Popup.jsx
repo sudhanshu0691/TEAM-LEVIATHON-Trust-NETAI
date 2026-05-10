@@ -140,57 +140,57 @@ export default function Popup(){
   }
 
   return (
-    <div className="w-[420px] font-sans bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-[500px] p-4">
+    <div className="w-[420px] font-sans bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-[600px] max-h-[90vh] flex flex-col p-5">
       {/* Header */}
-      <header className="mb-4 animate-slide-up">
-        <div className="flex items-center justify-between mb-2">
+      <header className="mb-4 flex-shrink-0 animate-slide-up">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
               <span className="text-2xl">🛡️</span>
             </div>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">TrustNET AI</h1>
-              <p className="text-xs text-gray-600">Advanced Web Protection</p>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">TrustNET AI</h1>
+              <p className="text-xs text-gray-500 font-medium">Web Protection</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button 
               onClick={toggleProtection}
-              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-300 ${
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-all duration-300 shadow-lg ${
                 isProtected 
-                  ? 'bg-green-500 text-white shadow-lg shadow-green-200' 
-                  : 'bg-gray-300 text-gray-600'
+                  ? 'bg-green-500 text-white shadow-green-300 hover:shadow-green-400' 
+                  : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
               }`}
             >
-              {isProtected ? '🟢 Protected' : '🔴 Disabled'}
+              {isProtected ? '🟢' : '🔴'}
             </button>
-            <div className="text-xs text-gray-500 bg-white px-2 py-1 rounded-full shadow">v0.2</div>
+            <div className="text-xs text-gray-600 bg-white px-2 py-0.5 rounded-full shadow font-semibold">v0.2</div>
           </div>
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-4 gap-2 mt-3">
-          <div className="bg-white rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
-            <div className="text-xs text-gray-500">Total</div>
-            <div className="text-lg font-bold text-indigo-600">{stats.total}</div>
+        <div className="grid grid-cols-4 gap-1.5 mt-2">
+          <div className="bg-white rounded-lg p-2 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 border border-gray-100">
+            <div className="text-xs text-gray-500 font-medium">Total</div>
+            <div className="text-base font-bold text-indigo-600 mt-0.5">{stats.total}</div>
           </div>
-          <div className="bg-white rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
-            <div className="text-xs text-gray-500">Safe</div>
-            <div className="text-lg font-bold text-green-600">{stats.safe}</div>
+          <div className="bg-white rounded-lg p-2 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 border border-gray-100">
+            <div className="text-xs text-gray-500 font-medium">Safe</div>
+            <div className="text-base font-bold text-green-600 mt-0.5">{stats.safe}</div>
           </div>
-          <div className="bg-white rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
-            <div className="text-xs text-gray-500">Threats</div>
-            <div className="text-lg font-bold text-red-600">{stats.unsafe}</div>
+          <div className="bg-white rounded-lg p-2 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 border border-gray-100">
+            <div className="text-xs text-gray-500 font-medium">Threats</div>
+            <div className="text-base font-bold text-red-600 mt-0.5">{stats.unsafe}</div>
           </div>
-          <div className="bg-white rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow">
-            <div className="text-xs text-gray-500">Blocked</div>
-            <div className="text-lg font-bold text-orange-600">{stats.blocked}</div>
+          <div className="bg-white rounded-lg p-2 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 border border-gray-100">
+            <div className="text-xs text-gray-500 font-medium">Blocked</div>
+            <div className="text-base font-bold text-orange-600 mt-0.5">{stats.blocked}</div>
           </div>
         </div>
       </header>
 
       {/* Navigation */}
-      <nav className="flex gap-2 mb-4 bg-white p-1 rounded-xl shadow-sm animate-slide-up">
+      <nav className="flex gap-2 mb-4 bg-white p-1 rounded-xl shadow-lg border border-gray-200 flex-shrink-0 animate-slide-up">
         {[
           {id: 'overview', icon: '🏠', label: 'Overview'},
           {id: 'history', icon: '📊', label: 'History'},
@@ -198,9 +198,9 @@ export default function Popup(){
         ].map(item => (
           <button 
             key={item.id}
-            className={`flex-1 px-3 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+            className={`flex-1 px-3 py-2 rounded-lg font-bold text-xs transition-all duration-300 ${
               tab === item.id 
-                ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md' 
+                ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-300 scale-105' 
                 : 'text-gray-600 hover:bg-gray-100'
             }`} 
             onClick={() => setTab(item.id)}
@@ -212,85 +212,64 @@ export default function Popup(){
       </nav>
 
       {/* Content */}
-      <div className="animate-fade-in">
+      <div className="flex-1 overflow-hidden animate-fade-in">
         {tab==='overview' && (
-          <div className="space-y-3">
+          <div className="space-y-3 h-full overflow-y-auto pr-1">
             {/* URL Checker */}
-            <div className="bg-white rounded-xl p-4 shadow-md">
-              <label className="text-sm font-semibold text-gray-700 mb-2 block">🔍 Check Website URL</label>
-              <div className="flex gap-2 mb-3">
+            <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
+              <label className="text-xs font-bold text-gray-700 mb-2 block flex items-center gap-2">🔍 <span>Check URL</span></label>
+              <div className="flex gap-2 mb-2">
                 <input 
-                  className="flex-1 px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none transition-colors" 
+                  className="flex-1 px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none transition-all duration-300 font-medium text-xs" 
                   value={inputUrl} 
                   onChange={e=>setInputUrl(e.target.value)}
-                  placeholder="Enter URL to scan..."
+                  placeholder="Enter URL..."
                 />
                 <button 
-                  className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-200 hover:scale-105" 
+                  className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-bold hover:shadow-lg hover:shadow-indigo-300 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 text-xs" 
                   onClick={onManualCheck}
                 >
                   Scan
                 </button>
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500">
-                <span className="px-2 py-1 bg-gray-100 rounded-full">Current Tab</span>
-                <code className="flex-1 truncate">{url || 'No active tab'}</code>
+                <span className="px-2 py-0.5 bg-gray-100 rounded-full font-semibold">Tab</span>
+                <code className="flex-1 truncate font-medium">{url || 'No URL'}</code>
               </div>
             </div>
 
             {/* Result Display */}
             {result ? (
               result.checking ? (
-                <div className="bg-white rounded-xl p-6 shadow-md text-center">
-                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-indigo-200 border-t-indigo-600"></div>
-                  <div className="text-sm text-gray-600 mt-3">Analyzing URL security...</div>
+                <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 text-center">
+                  <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-indigo-200 border-t-indigo-600"></div>
+                  <div className="text-xs text-gray-600 mt-3 font-medium">Analyzing...</div>
                 </div>
               ) : result.safe === false ? (
                 <Alert url={url || inputUrl} reason={result.reason} details={result} onWhitelist={()=>setShowWhitelist(true)} />
               ) : result.safe === true ? (
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-4 shadow-md">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-2xl shadow-lg">
+                    <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-xl shadow-lg">
                       ✓
                     </div>
                     <div>
-                      <h3 className="font-bold text-green-800 text-lg">Website is Safe</h3>
-                      <p className="text-sm text-green-600">{result.message || 'No threats detected. You can proceed safely.'}</p>
+                      <h3 className="font-bold text-green-800 text-sm">Safe</h3>
+                      <p className="text-xs text-green-600 mt-0.5">{result.message || 'No threats detected'}</p>
                     </div>
                   </div>
-                  {(result.source || result.reason) && (
-                    <div className="mt-3 pt-3 border-t border-green-200">
-                      <div className="text-xs text-green-700 space-y-1">
-                        <div className="flex justify-between">
-                          <span>Detection Source:</span>
-                          <span className="font-semibold">{result.source === 'local_dataset' ? '✓ Local Database' : result.source || result.reason}</span>
-                        </div>
-                        {result.match_type && (
-                          <div className="flex justify-between">
-                            <span>Match Type:</span>
-                            <span className="font-semibold capitalize">{result.match_type.replace('_', ' ')}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </div>
               ) : result.error ? (
-                // Error state - show alert style
                 <Alert url={url || inputUrl} reason={result.reason || 'error'} details={result} onWhitelist={()=>setShowWhitelist(true)} />
               ) : (
-                // Fallback for unknown state
-                <div className="bg-white rounded-xl p-4 shadow-md text-center text-gray-600">
-                  <div className="text-sm">Unknown result state</div>
-                  <pre className="text-xs mt-2 bg-gray-100 p-2 rounded text-left overflow-auto max-h-20">
-                    {JSON.stringify(result, null, 2)}
-                  </pre>
+                <div className="bg-white rounded-xl p-4 shadow-lg text-center text-gray-600 border border-gray-200">
+                  <div className="text-xs font-medium">Unknown state</div>
                 </div>
               )
             ) : (
-              <div className="bg-white rounded-xl p-6 shadow-md text-center text-gray-500">
-                <div className="text-4xl mb-2">🔒</div>
-                <div className="text-sm">Enter a URL above to check its safety</div>
+              <div className="bg-white rounded-xl p-6 shadow-lg text-center text-gray-500 border border-gray-200">
+                <div className="text-3xl mb-2">🔒</div>
+                <div className="text-xs font-medium">Enter a URL to check</div>
               </div>
             )}
 
