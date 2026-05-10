@@ -82,6 +82,7 @@
     } catch (error) {
       // Log error for debugging
       console.log('TrustNET AI detector error:', error.message);
+    }
   } catch (error) {
     console.log('TrustNET AI detector error:', error);
   }

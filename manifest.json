@@ -4,17 +4,17 @@
   "version": "0.1.0",
   "description": "Protects users from phishing and unsafe websites using APIs, ML classification, and heuristics.",
   "icons": {
-    "16": "public/icon16.png",
-    "48": "public/icon48.png",
-    "128": "public/icon128.png"
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
   },
   "action": {
     "default_title": "TrustNET AI",
     "default_popup": "index.html",
     "default_icon": {
-      "16": "public/icon16.png",
-      "48": "public/icon48.png",
-      "128": "public/icon128.png"
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
     }
   },
   "background": {

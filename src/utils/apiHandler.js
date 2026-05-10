@@ -30,7 +30,7 @@ export async function sendCheckRequest(url){
   const domain = extractHostname(normalizedUrl)
   const timeoutMs = await getApiTimeoutMs()
   
-  console.log('📤 [API] Sending check request:', {url, domain, hashed})
+  console.log('📤 [API] Sending check request:', {url, domain, hashed, timeout: timeoutMs})
   
   try{
     const resp = await axios.post(`${BACKEND}/check`, {
@@ -62,23 +62,25 @@ export async function sendCheckRequest(url){
     })
     
     // If backend is down, return error state
-    if(e.code === 'ECONNREFUSED' || e.code === 'ERR_NETWORK'){
+    if(e.code === 'ECONNREFUSED' || e.code === 'ERR_NETWORK' || !e.response){
       console.warn('⚠️ [API] Backend server is offline')
       return {
         safe: false,
         reason: 'backend_offline',
-        message: 'Backend server is not running. Please start the Flask backend.',
-        error: true
+        message: '❌ Backend server is not running. Start Flask backend with: python backend/app.py',
+        error: true,
+        threat_type: 'SERVICE_ERROR'
       }
     }
     
     // For other errors, be safe and mark as inconclusive
-    console.warn('⚠️ [API] Request failed, returning inconclusive')
+    console.warn('⚠️ [API] Request failed')
     return {
       safe: false,
       reason: 'error',
-      message: 'Error checking URL. Proceeding with caution.',
-      error: true
+      message: `⚠️ Error checking URL: ${e.message}. Proceeding with caution.`,
+      error: true,
+      threat_type: 'UNKNOWN'
     }
   }
 }

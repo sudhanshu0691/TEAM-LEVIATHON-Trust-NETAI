@@ -16,6 +16,7 @@ export default function Popup(){
   const [showWhitelist, setShowWhitelist] = useState(false)
   const [stats, setStats] = useState({total: 0, safe: 0, unsafe: 0, blocked: 0})
   const [isProtected, setIsProtected] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(()=>{
     loadStats()
@@ -140,68 +141,62 @@ export default function Popup(){
   }
 
   return (
-    <div className="w-[420px] font-sans bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-[600px] max-h-[90vh] flex flex-col p-5">
-      {/* Header */}
-      <header className="mb-4 flex-shrink-0 animate-slide-up">
-        <div className="flex items-center justify-between mb-3">
+    <div className="font-sans bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 flex flex-col rounded-xl shadow-2xl" style={{width: '420px', minHeight: '550px'}}>
+      {/* Header - Premium Design */}
+      <header className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 px-6 py-4 flex-shrink-0 rounded-t-xl">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-xl rounded-xl flex items-center justify-center shadow-lg border border-white/30 hover:bg-white/30 transition-all">
               <span className="text-2xl">🛡️</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">TrustNET AI</h1>
-              <p className="text-xs text-gray-500 font-medium">Web Protection</p>
+              <h1 className="text-xl font-bold text-white">TrustNET AI</h1>
+              <p className="text-xs text-blue-100">Advanced Web Protection</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button 
               onClick={toggleProtection}
-              className={`px-3 py-1 rounded-full text-xs font-bold transition-all duration-300 shadow-lg ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all border ${
                 isProtected 
-                  ? 'bg-green-500 text-white shadow-green-300 hover:shadow-green-400' 
-                  : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
+                  ? 'bg-green-400 text-slate-900 border-green-300 shadow-lg' 
+                  : 'bg-red-400 text-slate-900 border-red-300'
               }`}
             >
-              {isProtected ? '🟢' : '🔴'}
+              {isProtected ? '🟢 Active' : '🔴 Off'}
             </button>
-            <div className="text-xs text-gray-600 bg-white px-2 py-0.5 rounded-full shadow font-semibold">v0.2</div>
           </div>
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-4 gap-1.5 mt-2">
-          <div className="bg-white rounded-lg p-2 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 border border-gray-100">
-            <div className="text-xs text-gray-500 font-medium">Total</div>
-            <div className="text-base font-bold text-indigo-600 mt-0.5">{stats.total}</div>
-          </div>
-          <div className="bg-white rounded-lg p-2 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 border border-gray-100">
-            <div className="text-xs text-gray-500 font-medium">Safe</div>
-            <div className="text-base font-bold text-green-600 mt-0.5">{stats.safe}</div>
-          </div>
-          <div className="bg-white rounded-lg p-2 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 border border-gray-100">
-            <div className="text-xs text-gray-500 font-medium">Threats</div>
-            <div className="text-base font-bold text-red-600 mt-0.5">{stats.unsafe}</div>
-          </div>
-          <div className="bg-white rounded-lg p-2 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 border border-gray-100">
-            <div className="text-xs text-gray-500 font-medium">Blocked</div>
-            <div className="text-base font-bold text-orange-600 mt-0.5">{stats.blocked}</div>
-          </div>
+        {/* Stats Grid - Modern Cards */}
+        <div className="grid grid-cols-4 gap-2">
+          {[
+            { label: 'Total', value: stats.total, color: 'from-blue-400 to-blue-600', icon: '📊' },
+            { label: 'Safe', value: stats.safe, color: 'from-green-400 to-green-600', icon: '✅' },
+            { label: 'Threats', value: stats.unsafe, color: 'from-red-400 to-red-600', icon: '⚠️' },
+            { label: 'Blocked', value: stats.blocked, color: 'from-orange-400 to-orange-600', icon: '🚫' }
+          ].map((stat, i) => (
+            <div key={i} className="bg-white/10 backdrop-blur-xl rounded-lg p-2 border border-white/20 hover:bg-white/20 transition-all">
+              <div className="text-xs text-blue-100 font-medium">{stat.label}</div>
+              <div className="text-lg font-bold text-white mt-1">{stat.value}</div>
+            </div>
+          ))}
         </div>
       </header>
 
-      {/* Navigation */}
-      <nav className="flex gap-2 mb-4 bg-white p-1 rounded-xl shadow-lg border border-gray-200 flex-shrink-0 animate-slide-up">
+      {/* Navigation Tabs - Modern Style */}
+      <nav className="bg-white/5 backdrop-blur-sm px-3 py-3 flex gap-1 border-b border-white/10 flex-shrink-0">
         {[
           {id: 'overview', icon: '🏠', label: 'Overview'},
-          {id: 'history', icon: '📊', label: 'History'},
+          {id: 'history', icon: '📋', label: 'History'},
           {id: 'settings', icon: '⚙️', label: 'Settings'}
         ].map(item => (
           <button 
             key={item.id}
-            className={`flex-1 px-3 py-2 rounded-lg font-bold text-xs transition-all duration-300 ${
+            className={`px-4 py-2 rounded-lg font-semibold text-xs transition-all ${
               tab === item.id 
-                ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-300 scale-105' 
-                : 'text-gray-600 hover:bg-gray-100'
+                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' 
+                : 'text-gray-300 hover:text-white hover:bg-white/10'
             }`} 
             onClick={() => setTab(item.id)}
           >
@@ -211,74 +206,73 @@ export default function Popup(){
         ))}
       </nav>
 
-      {/* Content */}
-      <div className="flex-1 overflow-hidden animate-fade-in">
-        {tab==='overview' && (
-          <div className="space-y-3 h-full overflow-y-auto pr-1">
-            {/* URL Checker */}
-            <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
-              <label className="text-xs font-bold text-gray-700 mb-2 block flex items-center gap-2">🔍 <span>Check URL</span></label>
-              <div className="flex gap-2 mb-2">
-                <input 
-                  className="flex-1 px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none transition-all duration-300 font-medium text-xs" 
-                  value={inputUrl} 
-                  onChange={e=>setInputUrl(e.target.value)}
-                  placeholder="Enter URL..."
-                />
-                <button 
-                  className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-bold hover:shadow-lg hover:shadow-indigo-300 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 text-xs" 
-                  onClick={onManualCheck}
-                >
-                  Scan
-                </button>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <span className="px-2 py-0.5 bg-gray-100 rounded-full font-semibold">Tab</span>
-                <code className="flex-1 truncate font-medium">{url || 'No URL'}</code>
-              </div>
-            </div>
-
-            {/* Result Display */}
-            {result ? (
-              result.checking ? (
-                <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 text-center">
-                  <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-indigo-200 border-t-indigo-600"></div>
-                  <div className="text-xs text-gray-600 mt-3 font-medium">Analyzing...</div>
+      {/* Content Area */}
+      <div className="flex-1 bg-gradient-to-b from-slate-700 to-slate-800 overflow-y-auto scrollbar-thin">
+        <div className="flex flex-col gap-3 p-4">
+          {tab==='overview' && (
+            <>
+              {/* URL Input Section */}
+              <div className="bg-white/15 backdrop-blur-xl rounded-xl p-4 border border-white/30 shadow-lg hover:bg-white/20 transition-all">
+                <label className="text-xs font-bold text-blue-200 mb-2 block">🔍 Check Website</label>
+                <div className="flex gap-2">
+                  <input 
+                    className="flex-1 px-4 py-2.5 bg-white/20 border border-white/40 rounded-lg focus:border-blue-300 focus:outline-none transition-all text-white placeholder-gray-300 text-sm" 
+                    value={inputUrl} 
+                    onChange={e=>setInputUrl(e.target.value)}
+                    onKeyPress={e => e.key === 'Enter' && inputUrl && onManualCheck()}
+                    placeholder="Enter URL to scan..."
+                    type="url"
+                  />
+                  <button 
+                    className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 text-sm" 
+                    onClick={onManualCheck}
+                    disabled={!inputUrl || result?.checking}
+                  >
+                    {result?.checking ? '⏳' : '🔍'}
+                  </button>
                 </div>
-              ) : result.safe === false ? (
-                <Alert url={url || inputUrl} reason={result.reason} details={result} onWhitelist={()=>setShowWhitelist(true)} />
-              ) : result.safe === true ? (
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-xl shadow-lg">
-                      ✓
-                    </div>
+              </div>
+
+              {/* Results Section */}
+              {result?.checking ? (
+                <div className="flex-1 flex items-center justify-center bg-white/15 backdrop-blur-xl rounded-xl p-8 border border-white/30 shadow-lg">
+                  <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-blue-300 border-t-blue-500 mb-3"></div>
+                    <p className="text-sm text-blue-50 font-medium">Analyzing website...</p>
+                  </div>
+                </div>
+              ) : result?.safe === true ? (
+                <div className="bg-gradient-to-br from-green-500/30 to-emerald-600/30 border-2 border-green-400/70 rounded-xl p-4 backdrop-blur-xl shadow-lg">
+                  <div className="flex items-start gap-3">
+                    <div className="text-3xl">✅</div>
                     <div>
-                      <h3 className="font-bold text-green-800 text-sm">Safe</h3>
-                      <p className="text-xs text-green-600 mt-0.5">{result.message || 'No threats detected'}</p>
+                      <h3 className="font-bold text-green-50 text-base">Safe Website</h3>
+                      <p className="text-sm text-green-100 mt-1">{result.message || 'No threats detected - Safe to browse'}</p>
                     </div>
                   </div>
                 </div>
-              ) : result.error ? (
-                <Alert url={url || inputUrl} reason={result.reason || 'error'} details={result} onWhitelist={()=>setShowWhitelist(true)} />
+              ) : result?.safe === false || result?.error ? (
+                <Alert url={url || inputUrl} reason={result.reason} details={result} onWhitelist={()=>setShowWhitelist(true)} />
               ) : (
-                <div className="bg-white rounded-xl p-4 shadow-lg text-center text-gray-600 border border-gray-200">
-                  <div className="text-xs font-medium">Unknown state</div>
+                <div className="flex-1 bg-white/15 backdrop-blur-xl rounded-xl p-8 border border-white/30 flex flex-col items-center justify-center text-center shadow-lg">
+                  <div className="text-6xl mb-3">🛡️</div>
+                  <h3 className="font-bold text-white text-base">Check Website Safety</h3>
+                  <p className="text-sm text-gray-200 mt-2">Enter any URL above to scan for threats, phishing, and malware</p>
                 </div>
-              )
-            ) : (
-              <div className="bg-white rounded-xl p-6 shadow-lg text-center text-gray-500 border border-gray-200">
-                <div className="text-3xl mb-2">🔒</div>
-                <div className="text-xs font-medium">Enter a URL to check</div>
-              </div>
-            )}
+              )}
 
-            {showWhitelist && <Whitelist url={url} onClose={()=>setShowWhitelist(false)} />}
-          </div>
-        )}
+              {showWhitelist && <Whitelist url={url} onClose={()=>setShowWhitelist(false)} />}
+            </>
+          )}
 
-        {tab==='history' && <History onStatsUpdate={loadStats} />}
-        {tab==='settings' && <Settings />}
+          {tab==='history' && (
+            <History onStatsUpdate={loadStats} />
+          )}
+
+          {tab==='settings' && (
+            <Settings />
+          )}
+        </div>
       </div>
     </div>
   )
